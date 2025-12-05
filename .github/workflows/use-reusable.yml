@@ -18,10 +18,10 @@ jobs:
     uses: ./.github/workflows/reusable-test.yml
     with:
       python-version: '3.12'
-      test-command: 'pytest -v tests/custom'
+      test-command: 'pytest -v --cov'
     secrets:
       API_KEY: ${{ secrets.API_KEY }}
-
+  
   # Use the output from reusable workflow
   report:
     needs: test-default
