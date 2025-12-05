@@ -22,12 +22,32 @@ on:
         value: ${{ jobs.test.outputs.result }}
 
 jobs:
+  lint:
+    name: Code Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install flake8
+        run: pip install flake8
+
+      - name: Run linter
+        run: flake8 calculator.py test_calculator.py --max-line-length=100
+
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    needs: lint      # <-- Make test depend on lint
     outputs:
       result: ${{ steps.test-step.outputs.result }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,11 +75,9 @@ jobs:
         env:
           API_KEY: ${{ secrets.API_KEY }}
         run: |
-          # Run tests
           ${{ inputs.test-command }} --cov=calculator --cov-report=term-missing
-          # Set explicit output for reusable workflow
           echo "result=success" >> $GITHUB_OUTPUT
-          
+
       - name: Upload coverage artifact
         if: always()
         uses: actions/upload-artifact@v4
