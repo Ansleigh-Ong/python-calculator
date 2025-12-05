@@ -3,6 +3,11 @@ name: Reusable Test Workflow
 on:
   workflow_call:
     inputs:
+      artifact-name:
+        description: 'Name of the coverage artifact'
+        type: string
+        required: false
+        default: coverage-report
       python-version:
         description: 'Python version to use'
         required: false
@@ -82,5 +87,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-${{ github.job }}
+          name: ${{ inputs.artifact-name }}
           path: coverage/

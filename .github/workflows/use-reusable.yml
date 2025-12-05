@@ -12,6 +12,7 @@ jobs:
     uses: ./.github/workflows/reusable-test.yml
     with:
       test-command: 'pytest -v --cov=calculator --cov-report=term-missing --cov-report=xml:coverage/coverage.xml'
+      artifact-name: coverage-report-default
     secrets:
       API_KEY: ${{ secrets.API_KEY }}
   
@@ -21,6 +22,7 @@ jobs:
     with:
       python-version: '3.12'
       test-command: 'pytest -v --cov=calculator --cov-report=term-missing --cov-report=xml:coverage/coverage.xml'
+      artifact-name: coverage-report-custom
     secrets:
       API_KEY: ${{ secrets.API_KEY }}
   
