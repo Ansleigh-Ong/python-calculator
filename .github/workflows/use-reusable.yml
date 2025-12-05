@@ -10,6 +10,8 @@ jobs:
   # Call the reusable workflow with default settings
   test-default:
     uses: ./.github/workflows/reusable-test.yml
+    with:
+      test-command: 'pytest -v --cov=calculator --cov-report=term-missing'
     secrets:
       API_KEY: ${{ secrets.API_KEY }}
   
