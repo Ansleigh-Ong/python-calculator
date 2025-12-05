@@ -11,7 +11,7 @@ jobs:
   test-default:
     uses: ./.github/workflows/reusable-test.yml
     with:
-      test-command: 'pytest -v --cov=calculator --cov-report=term-missing'
+      test-command: 'pytest -v --cov=calculator --cov-report=term-missing --cov-report=xml:coverage/'
     secrets:
       API_KEY: ${{ secrets.API_KEY }}
   
@@ -20,7 +20,7 @@ jobs:
     uses: ./.github/workflows/reusable-test.yml
     with:
       python-version: '3.12'
-      test-command: 'pytest -v --cov=calculator --cov-report=term-missing'
+      test-command: 'pytest -v --cov=calculator --cov-report=term-missing --cov-report=xml:coverage/'
     secrets:
       API_KEY: ${{ secrets.API_KEY }}
   
