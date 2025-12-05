@@ -1,7 +1,7 @@
 name: Reusable Test Workflow
 
 on:
-  workflow_call:  # Special trigger for reusable workflows
+  workflow_call:
     inputs:
       python-version:
         description: 'Python version to use'
@@ -26,17 +26,17 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     outputs:
-      result: ${{ steps.test-step.outcome }}
+      result: ${{ steps.test-step.outputs.result }}
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python-version }}
-      
+
       - name: Cache pip packages
         uses: actions/cache@v4
         with:
@@ -44,19 +44,24 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
-      - name: Run tests
+
+      - name: Run tests with coverage
         id: test-step
         env:
           API_KEY: ${{ secrets.API_KEY }}
-        run: ${{ inputs.test-command }}
-
+        run: |
+          # Run tests
+          ${{ inputs.test-command }} --cov=calculator --cov-report=term-missing
+          # Set explicit output for reusable workflow
+          echo "result=success" >> $GITHUB_OUTPUT
+          
       - name: Upload coverage artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
